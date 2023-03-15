@@ -1,0 +1,46 @@
+@startuml Bookstore
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+skinparam shadowing false
+skinparam actor {
+	BorderColor black
+	BackgroundColor white
+}
+skinparam participant {
+	BorderColor black
+	BackgroundColor #94de5e
+}
+skinparam sequence {
+    LifeLineBorderColor black
+}
+skinparam ArrowColor black
+skinparam noteBorderColor black
+
+actor User #red
+
+==Browse Store==
+User -> UIBookStore : GET /user:id    Authentication Request
+User <-- UIBookStore: POST 200: Authentication Response
+UIBookStore -> Catalog : GET/books //Get the entire lists of books
+UIBookStore<--Catalog: POST 200 //Return the the list of books
+User -> Catalog : GET /book:id Get book based onClick()
+User<--Catalog: POST HTTP 200 OK // Response
+Cart -> Catalog: GET /book:id
+Cart<--Catalog: POST HTTP 200 OK Status
+
+
+==Add to Cart==
+UIBookStore -> Cart : POST cart:id/book
+Cart--> Catalog : GET /book:id
+Cart<- Catalog: 200 OK STATUS 
+UIBookStore <-- Cart : 201 created
+
+==Payment==
+UIBookStore -> Payment : POST / payment
+Payment -> Gateway : POST / payment
+Payment<--Gateway : 200 OK Status
+Payment -> Gateway: PUT /payment:id
+Payment <--Gateway: 204 no content
+
+@enduml

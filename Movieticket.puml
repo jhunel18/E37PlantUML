@@ -1,0 +1,41 @@
+@startuml Movieticket
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+skinparam shadowing false
+skinparam actor {
+	BorderColor black
+	BackgroundColor white
+}
+skinparam participant {
+	BorderColor black
+	BackgroundColor #94de5e
+}
+skinparam sequence {
+    LifeLineBorderColor black
+}
+skinparam ArrowColor black
+skinparam noteBorderColor black
+
+
+actor User #black
+
+User -> UIMovie: GET Authentication Request
+User<--UIMovie : POST 200 OK Status Response
+UIMovie -> MovieCatalog : Get movies/movie:id
+UIMovie <-- MovieCatalog : 200 OK Status
+UIMovie -> MovieSeats : GET All Seats
+UIMovie<-MovieSeats: 200 OK Status - Post all available seats
+UIMovie -> MovieSeats : Get - Get specific seat
+UIMovie <- MovieSeats : 200 OK Status
+UIMovie -> User : Confirm selected movie
+UIMovie <- User: 201 Created
+
+==Payment==
+UIMovie -> Payment : POST / payment
+Payment -> Gateway : POST / payment
+Payment<--Gateway : 200 OK Status
+Payment -> Gateway: PUT /payment:id
+Payment <--Gateway: 204 no content
+
+@enduml
